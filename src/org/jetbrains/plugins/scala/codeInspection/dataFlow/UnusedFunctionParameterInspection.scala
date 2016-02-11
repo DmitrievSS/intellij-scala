@@ -1,4 +1,4 @@
-package org.jetbrains.plugins.scala.codeInspection.dataFlow
+package org.jetbrains.plugins.scala
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
@@ -17,11 +17,10 @@ import scala.collection.mutable.ArrayBuffer
   * Created by ssdmitriev on 04.02.16.
   */
 class UnusedFunctionParameterInspection
-  extends AbstractInspection("UnusedFunctionParameter", "function parameter not used") {
+  extends AbstractInspection(UnusedFunctionParameterInspection.inspectionId, UnusedFunctionParameterInspection.inspectionName) {
   override def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case expr: ScFunctionDefinition =>
-      val message = "function parameter not used"
-      findUnusedParameter(expr).foreach(parameter => holder.registerProblem(parameter, message))
+      findUnusedParameter(expr).foreach(parameter => holder.registerProblem(parameter, UnusedFunctionParameterInspection.inspectionName))
   }
 
   def findUnusedParameter(f: ScFunctionDefinition): mutable.Buffer[ScParameter] = {
@@ -40,4 +39,9 @@ class UnusedFunctionParameterInspection
     f.body.foreach(_.accept(visitor))
     unusedParameters
   }
+}
+
+object UnusedFunctionParameterInspection {
+  val inspectionId = "UnusedFunctionParameter"
+  val inspectionName = "function parameter is not used"
 }
